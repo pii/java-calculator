@@ -2,8 +2,8 @@ package com.calculator.operations;
 
 public class Power implements Operation {
     @Override
-    public int calculate(int a, int b) {
-        return a^b;
+    public double calculate(double a, double b) {
+        return Math.pow(a, b);
     }
 
     @Override

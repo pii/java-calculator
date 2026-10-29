@@ -3,7 +3,7 @@ package com.calculator.operations;
 public class Plus implements Operation {
 
     @Override
-    public int calculate(int a, int b) {
+    public double calculate(double a, double b) {
         return a+b;
     }
 
