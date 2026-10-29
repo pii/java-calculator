@@ -23,8 +23,10 @@ import java.util.Map;
 
 public class CalculatorController {
 
-    @FXML private TextField textField;
-    @FXML private ListView<String> list;
+    @FXML
+    private TextField textField;
+    @FXML
+    private ListView<String> list;
 
     private final Map<String, Operation> operations = new HashMap<>();
 
@@ -55,16 +57,67 @@ public class CalculatorController {
         String key = ((Button) event.getSource()).getText();
 
         if (key.matches("[0-9]")) {
-            // digit function
+            digit(key);
         } else if (key.equals(".")) {
-            // dot function
+            dot();
         } else if (key.equals("C")) {
-            // clear function
+            clear();
         } else if (key.equals("=")) {
-            // calculate function
+            calculate();
         } else if (operations.containsKey(key)) {
             // operator function
         }
+    }
+
+
+    private Double apply(Operation op, double a, double b) {
+        double result = op.calculate(a, b);
+        return result;
+    }
+  
+    private void calculate() {
+        if (pending == null || stored == null || input.isEmpty()) {
+            return;
+        }
+        double a = stored;
+        double b = Double.parseDouble(input);
+        Double result = apply(pending, a, b);
+        if (result == null) return;
+
+        list.getItems().add(format(a) + " " + pending.symbol() + " " + format(b) + " = " + format(result));
+        list.scrollTo(list.getItems().size() - 1);
+
+        stored = result;
+        pending = null;
+        input = "";
+        justEvaluated = true;
+        updateDisplay();
+    }
+
+    private void digit(String d) {
+        if (justEvaluated) {
+            clear();
+        }
+        input = input.equals("0") ? d : input + d;
+        updateDisplay();
+    }
+
+    private void dot() {
+        if (justEvaluated) {
+            clear();
+        }
+        if (!input.contains(".")) {
+            input = (input.isEmpty() ? "0" : input) + ".";
+        }
+        updateDisplay();
+    }
+
+    private void clear() {
+        input = "";
+        stored = null;
+        pending = null;
+        justEvaluated = false;
+        updateDisplay();
     }
 
     private void updateDisplay() {
