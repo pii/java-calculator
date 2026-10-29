@@ -65,7 +65,7 @@ public class CalculatorController {
         } else if (key.equals("=")) {
             calculate();
         } else if (operations.containsKey(key)) {
-            // operator function
+             operator(operations.get(key));
         }
     }
 
@@ -117,6 +117,25 @@ public class CalculatorController {
         stored = null;
         pending = null;
         justEvaluated = false;
+        updateDisplay();
+    }
+
+    private void operator(Operation op) {
+        justEvaluated = false;
+        if (!input.isEmpty()) {
+            double value = Double.parseDouble(input);
+            if (pending != null && stored != null) {
+                Double result = apply(pending, stored, value);
+                if (result == null) return;
+                stored = result;
+            } else {
+                stored = value;
+            }
+            input = "";
+        } else if (stored == null) {
+            return;
+        }
+        pending = op;
         updateDisplay();
     }
 
